@@ -1,4 +1,5 @@
-from base import OAList, OADict
+from __future__ import absolute_import
+from .base import OAList, OADict
 
 class Users(OADict):
     """

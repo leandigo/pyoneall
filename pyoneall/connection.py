@@ -1,8 +1,9 @@
+from __future__ import absolute_import
 from urllib2 import Request, urlopen
 from base64 import encodestring
 from json import dumps, loads
-from base import OADict
-from classes import Users, Connections, Connection, User
+from .base import OADict
+from .classes import Users, Connections, Connection, User
 
 class OneAll():
     """
