@@ -1,11 +1,14 @@
 from __future__ import absolute_import
-from urllib2 import Request, urlopen
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
+from urllib.request import Request, urlopen
 from base64 import encodestring
 from json import dumps, loads
 from .base import OADict
 from .classes import Users, Connections, Connection, User
 
-class OneAll():
+class OneAll(object):
     """
     A worker for the OneAll REST API.
     """
@@ -35,7 +38,7 @@ class OneAll():
         :returns dict: The JSON result of the call in a dictionary format
         """
         request_url = '%s/%s.%s' % (self.base_url, action, OneAll.FORMAT__JSON)
-        for ix, (param, value) in enumerate(params.iteritems()):
+        for ix, (param, value) in enumerate(params.items()):
             request_url += "%s%s=%s" % (('?' if ix == 0 else '&'), param, value)
         req = Request(request_url, dumps(post_params) if post_params else None, {'Content-Type': 'application/json'})
         auth = encodestring('%s:%s' % (self.public_key, self.private_key)).replace('\n', '')
