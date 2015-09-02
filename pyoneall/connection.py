@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 from future import standard_library
+
 standard_library.install_aliases()
 from builtins import object
 from urllib.request import Request, urlopen
@@ -7,6 +8,7 @@ from base64 import encodestring
 from json import dumps, loads
 from .base import OADict
 from .classes import Users, Connections, Connection, User
+
 
 class OneAll(object):
     """
@@ -61,7 +63,7 @@ class OneAll(object):
         """
         oa_object = rtype()
         while page_number <= last_page or fetch_all:
-            response = OADict(**self._exec(action, {'page' : page_number})).response
+            response = OADict(**self._exec(action, {'page': page_number})).response
             page = getattr(response.result.data, data)
             oa_object.count = getattr(oa_object, 'count', 0) + getattr(page, 'count', 0)
             oa_object.entries = getattr(oa_object, 'entries', []) + getattr(page, 'entries', [])
@@ -120,7 +122,8 @@ class OneAll(object):
         :param bool fetch_all: Whether to fetch all records or not
         :returns Users: The connections
         """
-        connections = self._paginated('connections', 'connections', page_number, last_page, fetch_all, rtype=Connections)
+        connections = self._paginated('connections', 'connections', page_number, last_page, fetch_all,
+                                      rtype=Connections)
         connections.oneall = self
         [setattr(entry, 'oneall', self) for entry in connections.entries]
         return connections
