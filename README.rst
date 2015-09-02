@@ -10,7 +10,7 @@ OneAll API documentation is available at |onealldoc|_. However, in order to use 
 enough to read the docs for the Connection API: `Connection API Documentation`_.
 
 So far, we have tested pyoneall within Flask and Django apps. To use OneAll as a Django authentication backend,
-please check out our ``django_oneall`` project, which relies on this package.
+please check out our `django_oneall`_ project, which relies on this package.
 
 pyoneall defines the ``OneAll`` class, which is the API client. As of now, it has the following methods:
 
@@ -210,6 +210,7 @@ Released under the MIT License. See the LICENSE_ file for details.
 .. _oneall: http://www.oneall.com
 .. |onealldoc| replace:: http://docs.oneall.com
 .. _onealldoc: http://docs.oneall.com
+.. _django_oneall: https://github.com/leandigo/django-oneall
 .. _Connection API Documentation: http://docs.oneall.com/api/resources/connections/
 .. _Authentication Documentation: http://docs.oneall.com/api/basic/authentication/
 .. _Read Connection Details: http://docs.oneall.com/api/resources/connections/read-connection-details/
