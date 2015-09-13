@@ -4,7 +4,7 @@ class OAList(list):
     """
     A List of representing a JSON array with nested objects.
     """
-    each = None
+    each = None  # This is overriden in derived classes.
 
     def __init__(self, init_list=None):
         """
@@ -71,7 +71,8 @@ class OADict(dict):
 
     def __setattr__(self, key, value):
         super(OADict, self).__setattr__(key, value)
-        if key not in self.ignored: super(OADict, self).__setitem__(key, value)
+        if key not in self.ignored:
+            super(OADict, self).__setitem__(key, value)
 
     def __setitem__(self, key, value):
         super(OADict, self).__setitem__(key, value)
