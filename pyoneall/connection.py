@@ -1,16 +1,13 @@
-from __future__ import absolute_import
-from future import standard_library
-
-standard_library.install_aliases()
-from builtins import object
+# -*- coding: utf-8 -*-
 from urllib.request import Request, urlopen
-from base64 import encodestring
+from base64 import standard_b64encode
 from json import dumps, loads
+
 from .base import OADict
 from .classes import Users, Connections, Connection, User
 
 
-class OneAll(object):
+class OneAll():
     """
     A worker for the OneAll REST API.
     """
@@ -30,22 +27,24 @@ class OneAll(object):
         self.public_key = public_key
         self.private_key = private_key
 
-    def _exec(self, action, params={}, post_params=None):
+    def _exec(self, action, params=None, post_params=None):
         """
         Execute an API action
 
         :param str action: The action to be performed. Translated to REST call
-        :param str params: Additional GET parameters for action
+        :param dict params: Additional GET parameters for action
         :post_params: POST parameters for action
         :returns dict: The JSON result of the call in a dictionary format
         """
         request_url = '%s/%s.%s' % (self.base_url, action, OneAll.FORMAT__JSON)
-        for ix, (param, value) in enumerate(params.items()):
-            request_url += "%s%s=%s" % (('?' if ix == 0 else '&'), param, value)
+        if params:
+            for ix, (param, value) in enumerate(params.items()):
+                request_url += "%s%s=%s" % (('?' if ix == 0 else '&'), param, value)
         req = Request(request_url, dumps(post_params) if post_params else None, {'Content-Type': 'application/json'})
-        auth = encodestring('%s:%s' % (self.public_key, self.private_key)).replace('\n', '')
-        req.add_header('Authorization', 'Basic %s' % auth)
-        return loads(urlopen(req).read())
+        token = '%s:%s' % (self.public_key, self.private_key)
+        auth = standard_b64encode(token.encode())
+        req.add_header('Authorization', 'Basic %s' % auth.decode())
+        return loads(urlopen(req).read().decode())
 
     def _paginated(self, action, data, page_number=1, last_page=1, fetch_all=False, rtype=OADict):
         """
@@ -95,7 +94,7 @@ class OneAll(object):
         :param str user_token: The user token
         :returns User: The user object
         """
-        response = OADict(**self._exec('users/%s' % (user_token))).response
+        response = OADict(**self._exec('users/%s' % (user_token,))).response
         user = User(**response.result.data.user)
         user.response = response
         user.oneall = self
@@ -108,7 +107,7 @@ class OneAll(object):
         :param str user_token: The user token
         :returns OADict: User's contacts object
         """
-        response = OADict(**self._exec('users/%s/contacts' % (user_token))).response
+        response = OADict(**self._exec('users/%s/contacts' % (user_token,))).response
         user_contacts = OADict(**response.result.data.identities)
         user_contacts.response = response
         return user_contacts
@@ -135,22 +134,10 @@ class OneAll(object):
         :param str connection_token: The connection token
         :returns Connection: The requested connection
         """
-        response = OADict(**self._exec('connection/%s' % (connection_token))).response
+        response = OADict(**self._exec('connection/%s' % (connection_token,))).response
         connection = Connection(**response.result.data)
         connection.response = response
         return connection
-
-    def user_contacts(self, user_token):
-        """
-        Get user's contacts
-
-        :param str user_token: The user_token of the user whose contacts are to be fetched
-        :returns OADict: The user's contacts
-        """
-        response = OADict(**self._exec('users/%s/contacts' % (user_token))).response
-        contacts = OADict(**response.result.data.identities)
-        contacts.response = response
-        return contacts
 
     def publish(self, user_token, post_params):
         """
