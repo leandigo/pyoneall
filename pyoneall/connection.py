@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
-from urllib.error import HTTPError
-from urllib.request import Request, urlopen
+from __future__ import absolute_import, division, print_function, unicode_literals
+from future import standard_library
+
+standard_library.install_aliases()
+
 from base64 import standard_b64encode
 from json import dumps, loads
+from urllib.error import HTTPError
+from urllib.request import Request, urlopen
 
 from .base import OADict
 from .classes import Users, Connections, Connection, User, BadOneAllCredentials

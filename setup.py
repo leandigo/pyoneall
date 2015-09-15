@@ -8,6 +8,7 @@ setup(
     name='pyoneall',
     version='0.1.1',
     packages=['pyoneall'],
+    install_requires=['future'],
     license='MIT License, see LICENSE file',
     description='OneAll API wrapper (http://www.oneall.com). Provides unified API for 30+ social networks',
     long_description=README,
