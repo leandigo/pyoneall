@@ -1,13 +1,8 @@
 pyoneall - OneAll API Wrapper
 =============================
 
-**OneAll** (|oneall|_) provides web-applications with a unified API for **20+ social networks**.
+**OneAll** (|oneall|_) provides web-applications with a unified API for **30+ social networks**.
 **pyoneall** provides developers with OneAll accounts a simple interface with the OneAll API for Python-based web-applications.
-
-Disclaimer
-----------
-*This package is new, and so far has been tested in a development of a small number of projects.*
-*Please be sure to test all edge-cases where this package is used with your application!*
 
 Implementation Overview
 -----------------------
@@ -15,7 +10,7 @@ OneAll API documentation is available at |onealldoc|_. However, in order to use 
 enough to read the docs for the Connection API: `Connection API Documentation`_.
 
 So far, we have tested pyoneall within Flask and Django apps. To use OneAll as a Django authentication backend,
-please check out our ``django_oneall`` project, which relies on this package.
+please check out our `django_oneall`_ project, which relies on this package.
 
 pyoneall defines the ``OneAll`` class, which is the API client. As of now, it has the following methods:
 
@@ -206,8 +201,8 @@ Afterwards, publish it using ``publish()``::
 
 License
 -------
-Copyright (c) 2013, Leandigo (|leandigo|_)
-Released under the MIT License. See the LICENSE file for details.
+Copyright (c) 2013-2015, Leandigo (|leandigo|_)
+Released under the MIT License. See the LICENSE_ file for details.
 
 .. |leandigo| replace:: www.leandigo.com
 .. _leandigo: http://www.leandigo.com
@@ -215,6 +210,8 @@ Released under the MIT License. See the LICENSE file for details.
 .. _oneall: http://www.oneall.com
 .. |onealldoc| replace:: http://docs.oneall.com
 .. _onealldoc: http://docs.oneall.com
+.. _django_oneall: https://github.com/leandigo/django-oneall
 .. _Connection API Documentation: http://docs.oneall.com/api/resources/connections/
 .. _Authentication Documentation: http://docs.oneall.com/api/basic/authentication/
 .. _Read Connection Details: http://docs.oneall.com/api/resources/connections/read-connection-details/
+.. _LICENSE: LICENSE

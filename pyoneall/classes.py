@@ -1,13 +1,22 @@
-from base import OAList, OADict
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function, unicode_literals
+from .base import OAList, OADict
+
+
+class BadOneAllCredentials(Exception):
+    pass
+
 
 class Users(OADict):
     """
     Represents a /users/ OneAll API call
     """
+
     class UsersEntries(OAList):
         """
         Represents the `entries` attribute
         """
+
         class UsersEntry(OADict):
             """
             Represents each object within `entries`
@@ -30,6 +39,7 @@ class Users(OADict):
     @entries.setter
     def entries(self, value):
         self._entries = Users.UsersEntries(value)
+
 
 class Connections(OADict):
     """
@@ -63,16 +73,19 @@ class Connections(OADict):
     def entries(self, value):
         self._entries = Connections.ConnectionsEntries(value)
 
+
 class Connection(OADict):
     """
     A OneAll Connection
     """
     pass
 
+
 class User(OADict):
     """
     A OneAll User
     """
+
     def contacts(self):
         """
         Retrieve user's contacts
