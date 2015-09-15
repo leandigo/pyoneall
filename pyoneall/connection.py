@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
+from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 from base64 import standard_b64encode
 from json import dumps, loads
 
 from .base import OADict
-from .classes import Users, Connections, Connection, User
+from .classes import Users, Connections, Connection, User, BadOneAllCredentials
 
 
-class OneAll():
+class OneAll(object):
     """
     A worker for the OneAll REST API.
     """
@@ -44,7 +45,14 @@ class OneAll():
         token = '%s:%s' % (self.public_key, self.private_key)
         auth = standard_b64encode(token.encode())
         req.add_header('Authorization', 'Basic %s' % auth.decode())
-        return loads(urlopen(req).read().decode())
+        try:
+            request = urlopen(req)
+        except HTTPError as e:
+            if e.code == 401:
+                raise BadOneAllCredentials
+            else:
+                raise
+        return loads(request.read().decode())
 
     def _paginated(self, action, data, page_number=1, last_page=1, fetch_all=False, rtype=OADict):
         """

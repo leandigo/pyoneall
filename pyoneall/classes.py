@@ -3,6 +3,10 @@ from __future__ import absolute_import
 from .base import OAList, OADict
 
 
+class BadOneAllCredentials(Exception):
+    pass
+
+
 class Users(OADict):
     """
     Represents a /users/ OneAll API call

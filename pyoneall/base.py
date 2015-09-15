@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 class OAList(list):
     """
     A List of representing a JSON array with nested objects.
