@@ -6,7 +6,7 @@ from setuptools import setup
 README = open(join(dirname(__file__), 'README.rst')).read()
 setup(
     name='pyoneall',
-    version='0.2',
+    version='0.2.1',
     packages=['pyoneall'],
     install_requires=['future'],
     license='MIT License, see LICENSE file',
