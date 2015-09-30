@@ -14,9 +14,12 @@ standard_library.install_aliases()
 
 from base64 import standard_b64encode
 from json import dumps, loads
+from sys import version
 
 from .base import OADict
 from .classes import Users, Connections, Connection, User, BadOneAllCredentials
+
+__version__ = '0.2.2'
 
 
 class OneAll(object):
@@ -28,7 +31,7 @@ class OneAll(object):
 
     bindings = {}
 
-    def __init__(self, site_name, public_key, private_key, base_url=None):
+    def __init__(self, site_name, public_key, private_key, base_url=None, ua_prefix=None):
         """
         :param str site_name: The name of the OneAll site
         :param str public_key: API public key for the site
@@ -38,6 +41,8 @@ class OneAll(object):
         self.base_url = base_url if base_url else OneAll.DEFAULT_API_DOMAIN.format(site_name=site_name)
         self.public_key = public_key
         self.private_key = private_key
+        ua = str(ua_prefix or '').split() + ['pyoneall-' + __version__] + ('python-' + version).split()
+        self.user_agent_string = ' '.join(w for w in ua if w)
 
     def _exec(self, action, params=None, post_params=None):
         """
@@ -56,6 +61,7 @@ class OneAll(object):
         token = '%s:%s' % (self.public_key, self.private_key)
         auth = standard_b64encode(token.encode())
         req.add_header('Authorization', 'Basic %s' % auth.decode())
+        req.add_header('User-Agent', self.user_agent_string)
         try:
             request = urlopen(req)
         except HTTPError as e:
