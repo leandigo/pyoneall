@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
+from warnings import warn
 
 try:
     from urllib.error import HTTPError
@@ -14,12 +15,13 @@ standard_library.install_aliases()
 
 from base64 import standard_b64encode
 from json import dumps, loads
+from re import compile
 from sys import version
 
 from .base import OADict
 from .classes import Users, Connections, Connection, User, BadOneAllCredentials
 
-__version__ = '0.2.2'
+__version__ = '0.2.3'
 
 
 class OneAll(object):
@@ -30,6 +32,7 @@ class OneAll(object):
     FORMAT__JSON = 'json'
 
     bindings = {}
+    _version_info = (__version__, 'pyoneall', __version__, version.split()[0])
 
     def __init__(self, site_name, public_key, private_key, base_url=None, ua_prefix=None):
         """
@@ -37,12 +40,13 @@ class OneAll(object):
         :param str public_key: API public key for the site
         :param str private_key: API private key for the site
         :param str base_url: An alternate format for the API URL
+        :param str ua_prefix: DEPRECATED and ignored. Will be removed.
         """
         self.base_url = base_url if base_url else OneAll.DEFAULT_API_DOMAIN.format(site_name=site_name)
         self.public_key = public_key
         self.private_key = private_key
-        ua = str(ua_prefix or '').split() + ['pyoneall-' + __version__] + ('python-' + version).split()
-        self.user_agent_string = ' '.join(w for w in ua if w)
+        if ua_prefix is not None:
+            warn('The argument ua_prefix is no longer used. Use set_version() instead.', DeprecationWarning, 1)
 
     def _exec(self, action, params=None, post_params=None):
         """
@@ -50,7 +54,7 @@ class OneAll(object):
 
         :param str action: The action to be performed. Translated to REST call
         :param dict params: Additional GET parameters for action
-        :post_params: POST parameters for action
+        :param dict post_params: POST parameters for action
         :returns dict: The JSON result of the call in a dictionary format
         """
         request_url = '%s/%s.%s' % (self.base_url, action, OneAll.FORMAT__JSON)
@@ -61,7 +65,7 @@ class OneAll(object):
         token = '%s:%s' % (self.public_key, self.private_key)
         auth = standard_b64encode(token.encode())
         req.add_header('Authorization', 'Basic %s' % auth.decode())
-        req.add_header('User-Agent', self.user_agent_string)
+        req.add_header('User-Agent', self._get_user_agent_string())
         try:
             request = urlopen(req)
         except HTTPError as e:
@@ -173,3 +177,24 @@ class OneAll(object):
         :returns OADict: The API response
         """
         return OADict(**self._exec('users/%s/publish' % user_token, post_params=post_params))
+
+    def set_version(self, social_version, platform_name, platform_version):
+        """
+        Sets the version informed to OneAll.com in User-Agent strings. This info is used by OneAll.com to keep track of
+        which implementations are in use; all languages and environments.
+
+        :param str social_version: PEP-440 compliant version number of client code.
+        :param str platform_name: Name of platform, no spaces.
+                                  Make sure it's unique so your library project won't be confused with someone else's.
+        :param str platform_version: PEP-440 compliant version number of platform, e.g. Django or Flask version.
+        """
+        result = (social_version, platform_name, platform_version, version.split()[0])
+        invalid = tuple(filter(compile(r'[\s/]').search, result))
+        if invalid:
+            raise ValueError('The following values are invalid: [%s]' % ','.join(invalid))
+        self._version_info = result
+
+    def _get_user_agent_string(self):
+        ua = 'SocialLogin/%s %s/%s-%s pyoneall +http://oneall.com' % self._version_info
+        print(ua)
+        return ua
